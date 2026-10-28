@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>��� 6 ������I2C ��� MPU6050 ������</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;max-width:860px;margin:2rem auto;padding:0 16px;line-height:1.7;color:#222;background:#fff}
+  h1,h2,h3{line-height:1.3}h2{border-bottom:1px solid #ddd;padding-bottom:.3rem;margin-top:2rem}
+  table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95em}th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}th{background:#f3f3f3}
+  pre{background:#f6f8fa;padding:12px;overflow-x:auto;border-radius:6px}code{font-family:Consolas,monospace;font-size:.92em}
+  :not(pre)>code{background:#f0f0f0;padding:1px 4px;border-radius:3px}</style>
+</head>
+<body>
+<h1 id="esp32-韌體與驅動面試速成第-6-課">ESP32 韌體與驅動面試速成：第 6
+課</h1>
+<h2 id="第-6-課i2c-與-mpu6050-驅動">第 6 課：I2C 與 MPU6050 驅動</h2>
+<p>一句話：I2C 用兩條 open-drain
+線（SDA、SCL）掛很多裝置，每次傳輸是「START、位址、ACK、資料、ACK…、STOP」；寫一個
+I2C 感測器驅動，就是照資料手冊的暫存器表把這些傳輸組起來。</p>
+<h3 id="概念">概念</h3>
+<p><strong>一次 I2C 傳輸</strong>：</p>
+<ol type="1">
+<li>START：SCL 為高時，SDA 由高變低。</li>
+<li>7 位元位址 + 1 位元讀寫方向（0 = 寫、1 = 讀）。</li>
+<li>每 8 個位元後，接收方在第 9 個時脈把 SDA 拉低，代表 ACK；沒拉低就是
+NACK。</li>
+<li>資料位元組，高位元先送（和 UART 相反）。</li>
+<li>STOP：SCL 為高時，SDA 由低變高。</li>
+</ol>
+<p><strong>讀暫存器的標準流程</strong>：先「寫」暫存器位址，不送
+STOP，接著 <strong>repeated START</strong> 換成「讀」方向。用 repeated
+START
+是為了不讓別的主機在中間搶走匯流排。很多感測器讀完一個暫存器會自動把位址加
+1，所以一次可以 burst read
+好幾個暫存器，而且保證這些值來自同一次取樣。</p>
+<p><strong>為什麼是
+open-drain、要上拉電阻</strong>：任何裝置都可以把線拉低，但沒有人主動輸出高電位，所以不會有兩個裝置一高一低短路的問題，也能做
+ACK 和 clock
+stretching。上拉電阻太大，上升邊緣太慢（匯流排電容越大越嚴重）；太小，拉低時電流太大。常見
+2.2–4.7 kΩ。</p>
+<p><strong>Clock stretching</strong>：從機還沒準備好時，可以把 SCL
+拉住不放，主機要等它放開。不是每個主機控制器都支援得很好，是常見的相容性問題。</p>
+<p><strong>匯流排卡死</strong>：從機正在送資料時主機被重置，從機還等著時脈把剩下的位元送完，SDA
+就一直被它拉低。復原方法是主機手動打最多 9 個 SCL 脈衝，直到 SDA
+放開，再送一個 STOP。</p>
+<p><strong>速度</strong>：標準模式 100 kHz、快速模式 400 kHz、Fast-mode
+Plus 1 MHz。</p>
+<p><strong>驅動的結構</strong>：驅動只依賴一組 I2C
+函式指標（<code>i2c_bus_t</code>），不直接呼叫
+<code>Wire</code>。這樣驅動可以換平台，也能在電腦上用假匯流排測試。這就是「測試與模擬方法」講的
+HAL 抽象。</p>
+<h3 id="wokwi-練習-6自己寫-mpu6050-驅動">Wokwi 練習 6：自己寫 MPU6050
+驅動</h3>
+<p>程式專案是 <code>Day06_I2C_MPU6050</code>。MPU6050 的 SDA 接
+GPIO21、SCL 接 GPIO22，位址 0x68。驅動在 <code>lib/mpu6050</code>，附 5
+個用假匯流排的單元測試。</p>
+<table>
+<thead>
+<tr class="header">
+<th>EXERCISE</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>掃描 I2C 匯流排，列出有 ACK 的位址</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>直接用 <code>Wire</code> 讀 WHO_AM_I：寫暫存器位址、repeated
+START、讀 1 個位元組</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>用驅動每 500 ms 印出加速度、角速度、溫度。在 Wokwi 點 MPU6050
+可以拖滑桿</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>錯誤處理：錯的位址得到 NACK；示範匯流排卡死時的 9 個時脈復原</td>
+</tr>
+</tbody>
+</table>
+<p>驅動的初始化和讀取：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> mpu6050_init<span class="op">(</span>mpu6050_t <span class="op">*</span>dev<span class="op">,</span> <span class="dt">const</span> i2c_bus_t <span class="op">*</span>bus<span class="op">,</span> <span class="dt">uint8_t</span> addr<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> id <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> err <span class="op">=</span> read_regs<span class="op">(</span>dev<span class="op">,</span> MPU6050_REG_WHO_AM_I<span class="op">,</span> <span class="op">&amp;</span>id<span class="op">,</span> <span class="dv">1</span><span class="op">);</span>   <span class="co">// 先確認是對的晶片</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>err<span class="op">)</span> <span class="cf">return</span> err<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>id <span class="op">!=</span> <span class="bn">0x68</span><span class="op">)</span> <span class="cf">return</span> MPU6050_ERR_ID<span class="op">;</span>                    <span class="co">// 認錯晶片就不要亂寫</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  err <span class="op">=</span> write_reg<span class="op">(</span>dev<span class="op">,</span> MPU6050_REG_PWR_MGMT_1<span class="op">,</span> <span class="bn">0x00</span><span class="op">);</span>       <span class="co">// 上電預設在睡眠，要喚醒</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>err<span class="op">)</span> <span class="cf">return</span> err<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> write_reg<span class="op">(</span>dev<span class="op">,</span> MPU6050_REG_ACCEL_CONFIG<span class="op">,</span> <span class="bn">0x00</span><span class="op">);</span>    <span class="co">// ±2g</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int16_t</span> be16<span class="op">(</span><span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>p<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 大端序：高位元組在前。先組成 uint16_t 再轉 int16_t，負數才正確</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">(</span><span class="dt">int16_t</span><span class="op">)(</span><span class="dt">uint16_t</span><span class="op">)((</span>p<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">|</span> p<span class="op">[</span><span class="dv">1</span><span class="op">]);</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>單元測試用一份 128
+個暫存器的陣列模擬晶片，測了喚醒、NACK、認錯晶片、負數與大端序轉換、匯流排錯誤往上傳，5
+個全部通過。</p>
+<h3 id="面試題與參考答案">面試題與參考答案</h3>
+<p><strong>Q1. 描述一次「讀暫存器」的 I2C 傳輸。</strong> START、位址 +
+W、ACK、暫存器位址、ACK、repeated START、位址 + R、ACK、從機送資料、主機
+ACK（要繼續讀）或 NACK（最後一個）、STOP。主機在最後一個位元組回
+NACK，是告訴從機「不要再送了」。</p>
+<p><strong>Q2. 為什麼 I2C 要用 open-drain
+和上拉電阻？上拉電阻怎麼選？</strong> 多個裝置共用同一條線，open-drain
+讓任何人拉低都不會短路，也才能做 ACK、仲裁、clock
+stretching。電阻值由匯流排電容和速度決定：上升時間約等於 RC，400 kHz
+要求 300 ns 內，電容大就要用小電阻；下限受晶片能吸收的電流（通常 3
+mA）限制。</p>
+<p><strong>Q3. I2C 匯流排卡住（SDA 一直是低），怎麼辦？</strong>
+通常是從機在傳輸中途沒收到剩下的時脈。主機把 SCL 當 GPIO，打最多 9
+個時脈直到 SDA 放開，再送 STOP，然後重新初始化 I2C
+控制器。如果還是不行，就重新上電從機（設計時可以讓 MCU
+控制感測器電源）。</p>
+<p><strong>Q4. 兩個裝置同一個位址怎麼辦？</strong>
+很多晶片有位址腳（例如 MPU6050 的 AD0）可以改位址。不行的話用 I2C
+多工器（例如 TCA9548A）分成多段匯流排，或放到 ESP32 的第二組 I2C
+控制器上。</p>
+<p><strong>Q5. 什麼是 clock stretching？會造成什麼問題？</strong> 從機把
+SCL
+拉低不放，讓主機等它準備好資料。如果主機控制器不支援或逾時設太短，就會讀到錯的資料或回報逾時。驅動要設合理的逾時，而且逾時後要能復原匯流排。</p>
+<p><strong>Q6. 為什麼讀加速度要一次 burst read 14
+個位元組，不分開讀？</strong>
+分開讀時，晶片可能在兩次讀之間更新了數值，X 和 Y
+就來自不同的取樣；而且高低位元組分開讀，可能讀到新的高位元組配舊的低位元組。burst
+read 加上晶片的資料鎖存，可以保證一致性，也少了很多次 START
+和位址的開銷。</p>
+<p><strong>Q7. 你怎麼測一個 I2C 感測器驅動，手邊沒有硬體？</strong>
+把匯流排抽象成函式指標，測試時換成假匯流排：用陣列模擬暫存器，記錄被寫入的值，也能模擬
+NACK、錯誤的
+WHO_AM_I。這樣可以驗證初始化順序、位元組序、錯誤處理。最後再用 Wokwi
+或實體板做整合測試，用邏輯分析儀看波形。</p>
+</body>
+</html>

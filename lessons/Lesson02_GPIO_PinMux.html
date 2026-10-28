@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>��� 2 ������GPIO ��� pin mux</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;max-width:860px;margin:2rem auto;padding:0 16px;line-height:1.7;color:#222;background:#fff}
+  h1,h2,h3{line-height:1.3}h2{border-bottom:1px solid #ddd;padding-bottom:.3rem;margin-top:2rem}
+  table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95em}th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}th{background:#f3f3f3}
+  pre{background:#f6f8fa;padding:12px;overflow-x:auto;border-radius:6px}code{font-family:Consolas,monospace;font-size:.92em}
+  :not(pre)>code{background:#f0f0f0;padding:1px 4px;border-radius:3px}</style>
+</head>
+<body>
+<h1 id="esp32-韌體與驅動面試速成第-2-課">ESP32 韌體與驅動面試速成：第 2
+課</h1>
+<h2 id="第-2-課gpio-與-pin-mux">第 2 課：GPIO 與 pin mux</h2>
+<p>一句話：ESP32 的一支腳要先經過 IO_MUX 決定「這支腳給誰用」，再經過
+GPIO matrix 決定「哪個訊號接到這支腳」，最後才輪到第 1 課寫的 GPIO_OUT
+暫存器。</p>
+<h3 id="概念">概念</h3>
+<p><strong>一支腳的三層路徑</strong>：</p>
+<ol type="1">
+<li><strong>IO_MUX</strong>：每支腳有一個 IO_MUX
+暫存器。<code>MCU_SEL</code> 選功能（值 2 = GPIO，IDF 叫
+<code>PIN_FUNC_GPIO</code>），<code>FUN_IE</code>
+是輸入致能，<code>FUN_WPU</code>／<code>FUN_WPD</code>
+是上拉／下拉，<code>FUN_DRV</code> 是驅動強度（0–3，預設 2）。</li>
+<li><strong>GPIO
+matrix</strong>：<code>GPIO_FUNCn_OUT_SEL_CFG_REG</code> 決定第 n
+支腳輸出哪個周邊訊號，填 256（<code>SIG_GPIO_OUT_IDX</code>）表示由
+GPIO_OUT 暫存器控制。輸入方向則用 <code>GPIO_FUNCy_IN_SEL_CFG_REG</code>
+把某支腳接給某個周邊。所以 ESP32 的 UART、I2C 幾乎可以接到任意腳。</li>
+<li><strong>GPIO 本體</strong>：<code>GPIO_ENABLE</code>
+決定輸出致能，<code>GPIO_OUT</code>／<code>GPIO_IN</code>
+寫入與讀取電位，<code>GPIO_PINn_REG</code> 的 <code>PAD_DRIVER</code>
+位元選 open-drain。</li>
+</ol>
+<p>例外是高速訊號（SPI flash、HSPI／VSPI 跑 80 MHz）可以走 IO_MUX
+直連、跳過 matrix，因為 matrix 會多一段延遲。面試問「有 matrix
+為什麼還要 IO_MUX」就答這點。</p>
+<p><strong>輸出模式</strong>：</p>
+<ul>
+<li><strong>push-pull</strong>：上下兩顆電晶體，能主動輸出高和低。LED、SPI
+的片選線用這個。</li>
+<li><strong>open-drain</strong>：只能拉低，高電位靠外部上拉電阻。I2C、多顆晶片共用的中斷線一定用這個：任何一顆拉低整條線就是低（wired-AND），也不會因為一顆輸出高、一顆輸出低而短路。</li>
+</ul>
+<p><strong>輸入與上下拉</strong>：沒接東西的輸入腳會隨雜訊亂跳，一定要上拉或下拉。ESP32
+內建上拉約 45 kΩ，數值隨製程與溫度變動，需要精確時改用外部電阻。</p>
+<p><strong>ESP32 腳位地雷</strong>（面試與實務都會遇到）：</p>
+<table>
+<thead>
+<tr class="header">
+<th>腳位</th>
+<th>注意</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GPIO6–11</td>
+<td>接內部 SPI flash，不要用</td>
+</tr>
+<tr class="even">
+<td>GPIO34–39</td>
+<td>只能輸入，沒有內建上下拉</td>
+</tr>
+<tr class="odd">
+<td>GPIO0、2、5、12、15</td>
+<td>strapping pin，開機瞬間的電位決定開機模式與 flash 電壓。GPIO12
+開機時被拉高可能讓板子開不了機</td>
+</tr>
+<tr class="even">
+<td>ADC2 的腳位</td>
+<td>Wi-Fi 開啟時不能用 ADC2</td>
+</tr>
+</tbody>
+</table>
+<p>所以從這課開始 LED 改接 GPIO18、19、21，不再用 GPIO2。</p>
+<p><strong>去彈跳（debounce）</strong>：機械按鈕接觸的瞬間會在 1–10 ms
+內抖動好幾次，直接計數會把一次按下算成好幾次。軟體作法是「電位穩定維持一段時間才承認」，用
+4 個狀態的狀態機寫；硬體作法是 RC 濾波加施密特觸發器。</p>
+<table>
+<thead>
+<tr class="header">
+<th>目前狀態</th>
+<th>讀到的電位</th>
+<th>下一個狀態</th>
+<th>送出事件</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>RELEASED</td>
+<td>按下</td>
+<td>MAYBE_PRESSED（記下時間）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MAYBE_PRESSED</td>
+<td>放開</td>
+<td>RELEASED（只是彈跳）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MAYBE_PRESSED</td>
+<td>按下且已穩定 20 ms</td>
+<td>PRESSED</td>
+<td>PRESS</td>
+</tr>
+<tr class="even">
+<td>PRESSED</td>
+<td>放開</td>
+<td>MAYBE_RELEASED（記下時間）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MAYBE_RELEASED</td>
+<td>按下</td>
+<td>PRESSED（只是彈跳）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MAYBE_RELEASED</td>
+<td>放開且已穩定 20 ms</td>
+<td>RELEASED</td>
+<td>RELEASE</td>
+</tr>
+</tbody>
+</table>
+<p>狀態機不讀腳位、不呼叫
+<code>millis()</code>，電位和時間都由呼叫端傳進去。這樣它可以在電腦上做單元測試，這正是「測試與模擬方法」講的作法。</p>
+<h3 id="wokwi-練習-2按鈕切換-3-種-led-模式">Wokwi 練習 2：按鈕切換 3 種
+LED 模式</h3>
+<p>程式專案在教材資料夾的 <code>Day02_GPIO_PinMux</code>，用法和 Day 01
+一樣（PlatformIO 編譯、Wokwi 模擬）。電路是三顆 LED 各串 220Ω 接
+GPIO18／19／21，按鈕接 GPIO4 到 GND。改 <code>main.cpp</code> 的
+<code>EXERCISE</code>：</p>
+<table>
+<thead>
+<tr class="header">
+<th>值</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>沒有去彈跳，按一次看計數跳幾次（Wokwi 的按鈕有模擬彈跳）</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>用去彈跳狀態機，一次按下只算一次</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>按鈕切換：全滅 → 跑馬燈 → 三顆一起 2 Hz 閃，全程不用
+<code>delay()</code></td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>不呼叫 <code>pinMode</code>，自己寫 IO_MUX 與 GPIO matrix，印出和
+<code>pinMode</code> 的結果對照</td>
+</tr>
+</tbody>
+</table>
+<p>練習 3 的核心，就是 <code>pinMode(pin, OUTPUT)</code>
+底下做的四件事：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;soc/io_mux_reg.h&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;soc/gpio_periph.h&quot;</span><span class="pp">   </span><span class="co">// GPIO_PIN_MUX_REG[]：GPIO 編號 → IO_MUX 暫存器</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;soc/gpio_reg.h&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;soc/gpio_sig_map.h&quot;</span><span class="pp">  </span><span class="co">// SIG_GPIO_OUT_IDX = 256</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> reg_output_init<span class="op">(</span><span class="dt">int</span> pin<span class="op">)</span> <span class="op">{</span>   <span class="co">// 只適用 GPIO0～31</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  PIN_FUNC_SELECT<span class="op">(</span>GPIO_PIN_MUX_REG<span class="op">[</span>pin<span class="op">],</span> PIN_FUNC_GPIO<span class="op">);</span>              <span class="co">// 1. IO_MUX：交給 GPIO</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  REG_WRITE<span class="op">(</span>GPIO_FUNC0_OUT_SEL_CFG_REG <span class="op">+</span> <span class="dv">4</span> <span class="op">*</span> pin<span class="op">,</span> SIG_GPIO_OUT_IDX<span class="op">);</span>  <span class="co">// 2. matrix：由 GPIO_OUT 驅動</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  REG_CLR_BIT<span class="op">(</span>GPIO_PIN0_REG <span class="op">+</span> <span class="dv">4</span> <span class="op">*</span> pin<span class="op">,</span> GPIO_PIN0_PAD_DRIVER<span class="op">);</span>         <span class="co">// 3. push-pull</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  REG_WRITE<span class="op">(</span>GPIO_ENABLE_W1TS_REG<span class="op">,</span> <span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> pin<span class="op">);</span>                         <span class="co">// 4. 輸出致能</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>專案另附 <code>lib/debounce</code> 的單元測試（5
+個案例，含按下彈跳、短暫雜訊、<code>millis()</code> 溢位繞回），可以用
+<code>pio test -e native</code> 或直接用 gcc 在電腦上跑，步驟在專案的
+README。燒到實體板時，可以把 <code>hold_ms</code> 從 20 改成 5 和
+50，感受真實按鈕的彈跳時間。</p>
+<h3 id="面試題與參考答案">面試題與參考答案</h3>
+<p><strong>Q1. push-pull 和 open-drain 差在哪？各用在哪？</strong>
+push-pull 能主動輸出高和低，速度快，用在 LED、SPI。open-drain
+只能拉低，高電位靠上拉電阻，所以多個裝置可以共用一條線而不短路，用在
+I2C、共用中斷線，也能透過不同的上拉電壓做簡單的電位轉換。缺點是上升邊緣由
+RC 決定，比較慢。</p>
+<p><strong>Q2. 輸入腳為什麼要上拉或下拉？上拉電阻怎麼選？</strong>
+浮接的輸入是高阻抗，會被雜訊感應成隨機電位，還可能讓輸入級半導通而多耗電。電阻太大，上升時間慢、抗雜訊差；太小，按下時電流大、耗電。按鈕常用
+10 kΩ。I2C 依匯流排電容和速度算，常見 2.2–4.7 kΩ。</p>
+<p><strong>Q3. 什麼是按鈕彈跳？怎麼處理？</strong> 機械接點閉合時會在數
+ms 內反覆通斷。軟體可以用「穩定 N ms 才承認」的狀態機，或定時取樣、連續
+N 次相同才算數；硬體可以用 RC 濾波加施密特觸發器。不要在 ISR 裡用
+<code>delay()</code> 去彈跳，正確作法是 ISR 只記錄事件，交給 task
+或計時器處理（第 3 課會做）。</p>
+<p><strong>Q4. ESP32 的 IO_MUX 和 GPIO matrix 是什麼？</strong> IO_MUX
+決定每支腳的功能、上下拉和驅動強度。GPIO matrix
+是一個交換器，讓周邊訊號可以接到幾乎任何腳。高速訊號走 IO_MUX 直連以避開
+matrix 的延遲。STM32 對應的是 alternate
+function（AF），每支腳只能選固定幾種周邊。</p>
+<p><strong>Q5. 什麼是 strapping pin？設計電路時要注意什麼？</strong>
+晶片在 reset 放開的瞬間取樣這些腳的電位，決定開機模式（例如 GPIO0
+拉低進下載模式）或 flash
+電壓（GPIO12）。外接電路不能在開機時把它們拉到錯的電位，否則會出現「接上感測器就開不了機」的問題。</p>
+<p><strong>Q6. 為什麼 <code>delay()</code>
+不適合放在主迴圈裡做閃爍？</strong> <code>delay()</code> 期間 CPU
+什麼都不做，按鈕和其他工作都被延後。用「目前時間減上次時間」判斷是否該動作（非阻塞），主迴圈才能同時處理多件事。進一步就是用計時器中斷或
+RTOS task（第 4、9 課）。</p>
+<p><strong>Q7. <code>millis()</code> 大約 49.7
+天後會溢位，你的計時程式會壞嗎？</strong> 如果寫成
+<code>millis() - last &gt;= interval</code>，用無號整數相減，溢位繞回時差值仍然正確，不會壞。寫成
+<code>millis() &gt;= last + interval</code>
+在繞回時就會出錯。本課的單元測試有一個案例專門測這件事。</p>
+<p><strong>Q8. 為什麼要把去彈跳邏輯寫成不碰硬體的模組？</strong>
+把電位和時間當參數傳入，邏輯就和硬體分離，可以在電腦上做單元測試，也能重用在任何
+MCU。這是驅動分層的基本概念：硬體存取集中在最底層，上層是可測試的純邏輯。</p>
+</body>
+</html>

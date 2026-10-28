@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>ESP32 ���������������������������</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;max-width:860px;margin:2rem auto;padding:0 16px;line-height:1.7;color:#222;background:#fff}
+  h1,h2,h3{line-height:1.3}h2{border-bottom:1px solid #ddd;padding-bottom:.3rem;margin-top:2rem}
+  table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95em}th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}th{background:#f3f3f3}
+  pre{background:#f6f8fa;padding:12px;overflow-x:auto;border-radius:6px}code{font-family:Consolas,monospace;font-size:.92em}
+  :not(pre)>code{background:#f0f0f0;padding:1px 4px;border-radius:3px}</style>
+</head>
+<body>
+<h1 id="esp32-韌體與驅動面試速成">ESP32 韌體與驅動面試速成</h1>
+<p>Oct 23, 2026 · @shih huai huang</p>
+<h2 id="怎麼用這份計畫">怎麼用這份計畫</h2>
+<p>目標是 12 堂課內，把韌體／驅動面試最常考的觀念各配一個能在 Wokwi
+跑起來的練習，再配上面試題與參考答案。你已經熟
+C，所以這裡不教語法，只教「C 碰到硬體時」會出事的地方。</p>
+<ul>
+<li><strong>節奏</strong>：一天一堂，每堂約 2–3 小時（概念 30 分、Wokwi
+練習 60–90 分、面試題口頭練習 30 分）。時間更緊就一天兩堂，7
+天跑完。</li>
+<li><strong>工具</strong>：先在 <a href="https://wokwi.com/esp32">Wokwi
+ESP32</a> 開 ESP32
+專案驗證，再把同一份程式燒到你手上的開發板確認，兩邊結果不同時正好是面試好題材（時序、彈跳、電氣特性）。</li>
+<li><strong>框架</strong>：前幾堂用 Arduino 範本寫最快，但每堂都會指出
+ESP-IDF 對應的 API，因為面試官多半期待你懂 ESP-IDF／FreeRTOS
+這一層。</li>
+<li><strong>面試題怎麼練</strong>：先遮住答案自己講 1
+分鐘，再對照。答案的重點是「為什麼」，不是背定義。</li>
+</ul>
+<h2 id="課程大綱">課程大綱</h2>
+<p>12 堂課由底層往上疊：暫存器 → 周邊 → 通訊協定 → RTOS → 系統層。前 8
+堂是驅動面試的核心，時間不夠就優先把它們做完。</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>主題</th>
+<th>Wokwi 練習</th>
+<th>面試必問</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>記憶體映射暫存器、volatile、位元操作</td>
+<td>不用 digitalWrite，直接寫 GPIO 暫存器點燈、讀按鈕</td>
+<td>volatile 做什麼／不做什麼、const volatile、寫絕對位址</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>GPIO 與 pin mux（IO_MUX、GPIO matrix）、上拉／下拉、去彈跳</td>
+<td>按鈕去彈跳狀態機，切換 3 種 LED 模式</td>
+<td>open-drain vs push-pull、為什麼要去彈跳</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>中斷與 ISR</td>
+<td>GPIO 中斷計數按鈕，比較 polling 與中斷</td>
+<td>ISR 內不能做什麼、中斷延遲、共享變數保護、IRAM_ATTR</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>硬體計時器、PWM（LEDC）、Watchdog</td>
+<td>計時器中斷做精準 1 kHz tick，PWM 調光</td>
+<td>prescaler 計算、watchdog 用途與餵狗策略</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>UART 與 ring buffer 驅動</td>
+<td>自寫 ring buffer，做簡單指令列介面</td>
+<td>框格格式、baud 誤差、lock-free ring buffer</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>I2C</td>
+<td>不用現成函式庫，自寫 MPU6050 驅動讀加速度</td>
+<td>START/STOP/ACK、上拉電阻、clock stretching、匯流排卡死怎麼解</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>SPI</td>
+<td>驅動 ILI9341 螢幕畫圖</td>
+<td>CPOL/CPHA 四種模式、跟 I2C 怎麼選</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>DMA、快取、對齊</td>
+<td>SPI + DMA 傳大量像素，量測 CPU 使用率差異</td>
+<td>cache coherency、DMA 緩衝區為什麼要對齊、double buffering</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>FreeRTOS（一）：task、排程、堆疊</td>
+<td>三個不同優先權的 task，觀察搮占</td>
+<td>preemptive vs cooperative、stack overflow 偵測、雙核 affinity</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>FreeRTOS（二）：queue、semaphore、mutex</td>
+<td>ISR → queue → task 的資料流，重現 priority inversion</td>
+<td>mutex vs binary semaphore、priority inheritance、*FromISR API</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>開機流程、linker script、bootloader、OTA</td>
+<td>印出各區段位址、修改 partition table</td>
+<td>reset 到 main 之間發生什麼、.data/.bss、OTA 回滾</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>低功耗 + 驅動架構（HAL）+ 模擬面試</td>
+<td>deep sleep 加 GPIO／計時器喚醒，把前面驅動重構成 HAL</td>
+<td>睡眠模式差異、驅動分層、怎麼設計可測試的驅動</td>
+</tr>
+</tbody>
+</table>
+<h2 id="第-1-課記憶體映射暫存器與-volatile">第 1 課：記憶體映射暫存器與
+volatile</h2>
+<p>一句話：在 MCU 上，「控制硬體」就是「讀寫特定位址的記憶體」，而
+volatile 是告訴編譯器「這個位址每次都要真的去讀寫」。</p>
+<h3 id="概念">概念</h3>
+<p><strong>記憶體映射
+I/O（MMIO）</strong>：周邊（GPIO、UART、計時器…）的控制暫存器被放在位址空間裡。寫入
+ESP32 的 <code>0x3FF44008</code>
+不是存資料，而是讓某幾支腳輸出高電位。位址從晶片的 Technical Reference
+Manual（TRM）查，面試時要能說出「我會去查 TRM 的 register map」。</p>
+<p><strong>為什麼需要
+volatile</strong>：編譯器假設記憶體只有程式會改。對一個普通指標讀兩次，它可能只讀一次；連寫兩次，可能只留最後一次。但硬體暫存器會自己變（狀態位元），而且「寫」本身就有副作用。volatile
+強制每一次存取都照程式碼發生，且順序不變（相對於其他 volatile
+存取）。</p>
+<p><strong>volatile 不做的事</strong>（面試加分點）：</p>
+<ul>
+<li>不保證原子性：<code>count++</code>
+仍是讀–改–寫三步，可能被中斷打斷。</li>
+<li>不是記憶體屏障：不阻止 CPU 或快取重排，也不管非 volatile
+變數的順序。多核（ESP32 是雙核）共享資料要用 mutex、critical section 或
+C11 atomics。</li>
+</ul>
+<p><strong>位元操作三件套</strong>：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>reg <span class="op">|=</span>  <span class="op">(</span><span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> n<span class="op">);</span>   <span class="co">// set</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>reg <span class="op">&amp;=</span> <span class="op">~(</span><span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> n<span class="op">);</span>   <span class="co">// clear</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>reg <span class="op">^=</span>  <span class="op">(</span><span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> n<span class="op">);</span>   <span class="co">// toggle</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>reg <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> n<span class="op">))</span> <span class="co">// test</span></span></code></pre></div>
+<p>上面這些在暫存器上是「讀–改–寫」，如果中間被 ISR
+或另一個核心改了同一個暫存器，就會覆蓋掉對方的修改。所以 ESP32 提供
+<strong>W1TS（write 1 to set）／W1TC（write 1 to clear）</strong>
+暫存器：只寫不讀，寫 1 的位元才有作用，天生原子。STM32 的 BSRR
+是同樣的設計。</p>
+<h3 id="wokwi-練習-1直接寫暫存器點燈">Wokwi 練習
+1：直接寫暫存器點燈</h3>
+<p>在 Wokwi 開一個 ESP32（Arduino）專案，放一顆 LED（串 220Ω 到
+GPIO2）和一個按鈕（GPIO4 到 GND）。以下位址來自 ESP32 TRM 的 GPIO
+章節，適用於原版 ESP32（Wokwi 預設的 DevKit V1）；S3、C3 位址不同。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Arduino.h&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define GPIO_BASE            </span><span class="bn">0x3FF44000</span><span class="bu">u</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define REG32</span><span class="op">(</span><span class="pp">off</span><span class="op">)</span><span class="pp">           </span><span class="op">(*(</span><span class="dt">volatile</span><span class="pp"> </span><span class="dt">uint32_t</span><span class="pp"> </span><span class="op">*)(</span><span class="pp">GPIO_BASE </span><span class="op">+</span><span class="pp"> </span><span class="op">(</span><span class="pp">off</span><span class="op">)))</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#define GPIO_OUT_W1TS        </span>REG32<span class="op">(</span><span class="bn">0x08</span><span class="op">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#define GPIO_OUT_W1TC        </span>REG32<span class="op">(</span><span class="bn">0x0C</span><span class="op">)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#define GPIO_ENABLE_W1TS     </span>REG32<span class="op">(</span><span class="bn">0x24</span><span class="op">)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#define GPIO_IN              </span>REG32<span class="op">(</span><span class="bn">0x3C</span><span class="op">)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> LED <span class="op">=</span> <span class="dv">2</span><span class="op">,</span> BTN <span class="op">=</span> <span class="dv">4</span><span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> setup<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  pinMode<span class="op">(</span>LED<span class="op">,</span> OUTPUT<span class="op">);</span>        <span class="co">// 先讓 IO_MUX 把腳位交給 GPIO（第 2 課會拆解）</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  pinMode<span class="op">(</span>BTN<span class="op">,</span> INPUT_PULLUP<span class="op">);</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  GPIO_ENABLE_W1TS <span class="op">=</span> <span class="op">(</span><span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> LED<span class="op">);</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> loop<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="dt">bool</span> pressed <span class="op">=</span> <span class="op">!(</span>GPIO_IN <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> BTN<span class="op">));</span>   <span class="co">// 上拉，按下為 0</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>pressed<span class="op">)</span> GPIO_OUT_W1TS <span class="op">=</span> <span class="op">(</span><span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> LED<span class="op">);</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>         GPIO_OUT_W1TC <span class="op">=</span> <span class="op">(</span><span class="dv">1</span><span class="bu">u</span> <span class="op">&lt;&lt;</span> LED<span class="op">);</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>完成後試三件事：</p>
+<ol type="1">
+<li>按住按鈕時 LED 以 2 Hz 閃爍，只用 W1TS／W1TC，不用
+<code>^=</code>。</li>
+<li>拿掉 <code>REG32</code> 裡的 <code>volatile</code>，再寫一個
+<code>while (!(GPIO_IN &amp; (1u &lt;&lt; BTN)));</code>
+等待放開的迴圈，觀察行為是否改變（編譯器可能把讀取提到迴圈外，變成死迴圈）。</li>
+<li>把自寫的巨集改成 ESP-IDF 的 <code>#include "soc/gpio_reg.h"</code>
+與
+<code>REG_WRITE(GPIO_OUT_W1TS_REG, ...)</code>，確認位址一致。面試時說得出「IDF
+的 <code>gpio_set_level()</code> 底下就是寫這個暫存器」很加分。</li>
+</ol>
+<p>做完後燒到你的實體板。很多 DevKit 板上的藍色 LED 就接在
+GPIO2，可以不接線。</p>
+<h3 id="面試題與參考答案">面試題與參考答案</h3>
+<p><strong>Q1. volatile 是什麼？什麼時候用？</strong>
+告訴編譯器這個物件可能被程式以外的東西改變，每次存取都要真的發生，不可快取在暫存器、不可合併或刪除。三個典型場景：記憶體映射暫存器、ISR
+與主程式共享的變數、被其他執行緒或 DMA
+修改的記憶體。要主動補充：它不保證原子性，也不是記憶體屏障。</p>
+<p><strong>Q2. 一個變數可以同時是 const 和 volatile 嗎？</strong>
+可以。<code>const</code> 是「程式不該寫它」，<code>volatile</code>
+是「它自己會變」。例子是唯讀的狀態暫存器：<code>const volatile uint32_t *status</code>。</p>
+<p><strong>Q3.
+<code>volatile int *p</code>、<code>int * volatile p</code>、<code>volatile int * volatile p</code>
+差在哪？</strong>
+第一個是「指向的資料」會變（暫存器指標的常見寫法）；第二個是「指標本身」會變，例如被
+ISR 更新的 buffer 指標；第三個兩者皆是。讀法是從變數名往左讀。</p>
+<p><strong>Q4. 把 0xAA55 寫入絕對位址 0x67A9（一個 int）。</strong>
+<code>*(volatile int *)0x67A9 = 0xAA55;</code>。加分點：指出 0x67A9 不是
+4 位元組對齊，在很多架構（包括 ESP32 的
+Xtensa）上會觸發例外；實務上暫存器位址一定是對齊的。</p>
+<p><strong>Q5. 下面這個函式有什麼問題？</strong>
+<code>int square(volatile int *p) { return *p * *p; }</code>
+兩次讀取之間值可能改變，結果不一定是平方。修法：先讀到區域變數
+<code>int v = *p; return v * v;</code>。</p>
+<p><strong>Q6. 為什麼 ESP32／STM32 要提供
+W1TS／W1TC（BSRR）這種暫存器？</strong> <code>GPIO_OUT |= mask</code>
+是讀–改–寫。如果讀完之後、寫回之前發生中斷，且 ISR
+改了同一個暫存器的其他位元，寫回時就把 ISR 的修改蓋掉了。W1TS／W1TC
+是單一寫入，只影響寫 1 的位元，不需關中斷。</p>
+<p><strong>Q7. 用 struct bit-field 描述暫存器好嗎？</strong>
+可讀性好，ESP-IDF 自己的 <code>gpio_struct.h</code> 就這樣做。但
+bit-field
+的位元順序、填充、存取寬度是實作定義的，換編譯器可能不同；而且改一個欄位仍是讀–改–寫。跨平台的程式用
+mask + shift 巨集較安全。</p>
+<p><strong>Q8. 不用暫存器也可以用
+digitalWrite，為什麼要懂這些？</strong> 驅動工程師的工作就是寫
+digitalWrite 這一層。加上效能（digitalWrite
+有查表與檢查，直接寫暫存器是一個 store
+指令）、除錯（用除錯器看暫存器值確認硬體狀態）、以及把新晶片帶起來時沒有現成函式庫可用。</p>
+<h2 id="測試與模擬方法">測試與模擬方法</h2>
+<p>面試常問「你怎麼測試韌體？」，好的答案是分三層：邏輯在主機上測、整合在模擬器上測、時序與電氣在實體板上測。</p>
+<table>
+<thead>
+<tr class="header">
+<th>層級</th>
+<th>工具</th>
+<th>測什麼</th>
+<th>抓不到什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>主機端單元測試</td>
+<td>gcc + <a
+href="https://github.com/ThrowTheSwitch/Unity">Unity</a>（或
+Ceedling、CMock）；ESP-IDF 也有 linux target</td>
+<td>狀態機、ring buffer、協定解析、驅動對暫存器寫了什麼</td>
+<td>真實時序、中斷競爭</td>
+</tr>
+<tr class="even">
+<td>模擬器</td>
+<td><a href="https://wokwi.com/esp32">Wokwi</a>（網頁、VS Code
+擴充、wokwi-cli 可放進 CI）</td>
+<td>整個韌體跑在模擬 ESP32 上，搭配模擬感測器、邏輯分析儀</td>
+<td>電氣特性、按鈕彈跳（模擬的按鈕可設定彈跳但不完全等於實物）</td>
+</tr>
+<tr class="odd">
+<td>實體板</td>
+<td>你的 ESP32 + 邏輯分析儀或示波器</td>
+<td>時序、功耗、電氣、長時間穩定性</td>
+<td>自動化較難</td>
+</tr>
+</tbody>
+</table>
+<p><strong>讓驅動可以在主機上測的關鍵</strong>：不要把暫存器位址寫死在程式裡。兩種常見做法：</p>
+<ol type="1">
+<li>把暫存器基址當參數傳入，測試時指向一塊 RAM 陣列（fake
+registers），執行驅動後檢查陣列內容。</li>
+<li>驅動只依賴一個 HAL 介面（一組函式指標），測試時換成 mock。例如
+MPU6050 驅動只呼叫 <code>i2c-&gt;write_read()</code>，測試時用 mock
+回傳預設的位元組。</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">(*</span>write_read<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>ctx<span class="op">,</span> <span class="dt">uint8_t</span> addr<span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>tx<span class="op">,</span> <span class="dt">size_t</span> txlen<span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">uint8_t</span> <span class="op">*</span>rx<span class="op">,</span> <span class="dt">size_t</span> rxlen<span class="op">);</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>ctx<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> i2c_bus_t<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> mpu6050_read_accel<span class="op">(</span><span class="dt">const</span> i2c_bus_t <span class="op">*</span>bus<span class="op">,</span> <span class="dt">int16_t</span> out<span class="op">[</span><span class="dv">3</span><span class="op">]);</span></span></code></pre></div>
+<p>你做過遊戲框架，這就是你熟悉的「平台抽象層」思路，面試時可以直接拿來類比。第
+5、6 課會實際用這個模式寫 ring buffer 與 MPU6050 驅動，並配一份 Unity
+測試。</p>
+</body>
+</html>

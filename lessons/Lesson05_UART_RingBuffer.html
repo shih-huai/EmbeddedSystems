@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>��� 5 ������UART ��� ring buffer</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;max-width:860px;margin:2rem auto;padding:0 16px;line-height:1.7;color:#222;background:#fff}
+  h1,h2,h3{line-height:1.3}h2{border-bottom:1px solid #ddd;padding-bottom:.3rem;margin-top:2rem}
+  table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95em}th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}th{background:#f3f3f3}
+  pre{background:#f6f8fa;padding:12px;overflow-x:auto;border-radius:6px}code{font-family:Consolas,monospace;font-size:.92em}
+  :not(pre)>code{background:#f0f0f0;padding:1px 4px;border-radius:3px}</style>
+</head>
+<body>
+<h1 id="esp32-韌體與驅動面試速成第-5-課">ESP32 韌體與驅動面試速成：第 5
+課</h1>
+<h2 id="第-5-課uart-與-ring-buffer">第 5 課：UART 與 ring buffer</h2>
+<p>一句話：UART
+是沒有時脈線、靠雙方約好鮑率的非同步串列；驅動的核心工作，是用中斷把硬體
+FIFO 的資料搬進 ring buffer，讓主程式慢慢處理。</p>
+<h3 id="概念">概念</h3>
+<p><strong>一個 UART 框格</strong>：閒置時線是高電位。一個低電位的 start
+bit，接著 5–9
+個資料位元（<strong>低位元先送</strong>），可選的同位位元，最後 1 或 2
+個高電位的 stop bit。最常見的 8N1 是每個位元組 10 個位元，所以 115200
+baud 一秒最多約 11,520 個位元組。</p>
+<p><strong>鮑率誤差</strong>：接收端看到 start bit
+的下降緣就開始計時，在每個位元的中間取樣（通常用 16 倍過取樣）。到第 10
+個位元時累積誤差不能超過半個位元，所以兩端加起來的誤差大約要在 ±2–3%
+內。鮑率不對時，接收端在該是 stop bit 的地方讀到 0，就是 <strong>framing
+error</strong>。</p>
+<p><strong>硬體流量控制</strong>：RTS/CTS
+兩條線，接收端快滿時告訴對方先停。沒有流量控制又來不及讀，就會
+<strong>overrun</strong>（硬體 FIFO 滿了，新資料被丟掉）。</p>
+<p><strong>ESP32 的 UART 驅動</strong>：3 組 UART，每組有 128
+位元組的硬體 FIFO。驅動設定「FIFO 快滿」和「一段時間沒新資料（RX
+timeout）」兩種中斷，在中斷裡把 FIFO 搬進軟體 ring
+buffer。因為不是每個位元組中斷一次，CPU 負擔很小。進一步可以用 DMA（第 8
+課）。</p>
+<p><strong>SPSC ring buffer（單一生產者、單一消費者）</strong>：</p>
+<ul>
+<li>容量用 2 的次方，取餘數變成
+<code>&amp; mask</code>，索引是一直往上加的
+<code>uint32_t</code>，滿的條件是
+<code>head - tail == size</code>，每一格都用得到。</li>
+<li><code>head</code> 只有生產者（ISR）寫，<code>tail</code>
+只有消費者（主程式）寫，所以不用上鎖也不用關中斷。</li>
+<li>順序很重要：生產者先寫資料再更新 <code>head</code>。單核心上
+volatile 加上編譯器屏障就夠；雙核心要用 release/acquire（本課用 GCC 的
+<code>__atomic</code> 內建函式）。</li>
+</ul>
+<h3 id="wokwi-練習-5自己跟自己通訊再做一個指令列">Wokwi 練習
+5：自己跟自己通訊，再做一個指令列</h3>
+<p>程式專案是 <code>Day05_UART_RingBuffer</code>。電路上 GPIO27（UART1
+TX）接到 GPIO16（UART2 RX），LED 接 GPIO18。ring buffer 和指令列放在
+<code>lib/ringbuf</code>、<code>lib/cli</code>，共 12 個單元測試。</p>
+<table>
+<thead>
+<tr class="header">
+<th>EXERCISE</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>UART1 每秒送一行字，UART2 收到後印出來</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>送 115200、收 9600，看收到的位元組和 framing error 次數</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>在 Serial Monitor 打
+<code>help</code>、<code>led on</code>、<code>blink 200</code>、<code>stats</code>
+控制 LED</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>ring buffer 只有 64 bytes、消費者很慢，看資料被丟掉</td>
+</tr>
+</tbody>
+</table>
+<p>練習 2 的資料流：UART 驅動的回呼是生產者，<code>loop()</code>
+是消費者。我在 ESP32 模擬器上送進
+<code>help</code>、<code>led on</code>、<code>blink 200</code>、<code>foo</code>、<code>stats</code>，回應都正確。ring
+buffer 另外用兩個執行緒在電腦上對傳了 5,000
+萬個位元組，沒有任何錯誤。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> rb_put<span class="op">(</span>ringbuf_t <span class="op">*</span>rb<span class="op">,</span> <span class="dt">uint8_t</span> byte<span class="op">)</span> <span class="op">{</span>          <span class="co">// 只有生產者呼叫</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> head <span class="op">=</span> __atomic_load_n<span class="op">(&amp;</span>rb<span class="op">-&gt;</span>head<span class="op">,</span> __ATOMIC_RELAXED<span class="op">);</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> tail <span class="op">=</span> __atomic_load_n<span class="op">(&amp;</span>rb<span class="op">-&gt;</span>tail<span class="op">,</span> __ATOMIC_ACQUIRE<span class="op">);</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>head <span class="op">-</span> tail <span class="op">&gt;</span> rb<span class="op">-&gt;</span>mask<span class="op">)</span> <span class="op">{</span> rb<span class="op">-&gt;</span>dropped<span class="op">++;</span> <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span> <span class="op">}</span>   <span class="co">// 滿了</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  rb<span class="op">-&gt;</span>buf<span class="op">[</span>head <span class="op">&amp;</span> rb<span class="op">-&gt;</span>mask<span class="op">]</span> <span class="op">=</span> byte<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  __atomic_store_n<span class="op">(&amp;</span>rb<span class="op">-&gt;</span>head<span class="op">,</span> head <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> __ATOMIC_RELEASE<span class="op">);</span>        <span class="co">// 資料寫好才公布</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="面試題與參考答案">面試題與參考答案</h3>
+<p><strong>Q1. 畫出一個 8N1 的 UART 框格。115200 baud
+一秒能傳多少位元組？</strong> start bit（0）、資料 bit0 到
+bit7（低位元先送）、stop bit（1），共 10 個位元。115200 / 10 = 11,520
+位元組每秒。</p>
+<p><strong>Q2. 兩端鮑率差多少還能通？為什麼？</strong> 接收端只在 start
+bit
+對齊一次，之後靠自己的時脈在位元中間取樣。到最後一個位元累積誤差不能超過半個位元，10
+個位元下理論上限約 5%，扣掉取樣誤差與邊緣斜率，實務上兩端合計要在 2–3%
+內。這也是為什麼用內部 RC 振盪器的 MCU 做 UART 要小心。</p>
+<p><strong>Q3. UART、I2C、SPI 怎麼選？</strong>
+UART：兩條線、點對點、不需時脈，適合除錯輸出、模組（GPS、藍牙、數據機）、較長距離（搭
+RS-485）。I2C：兩條線掛很多裝置、有位址與
+ACK，適合低速感測器。SPI：四條線以上、全雙工、幾十
+MHz，適合螢幕、flash、ADC。</p>
+<p><strong>Q4. 為什麼 ring buffer 的容量常用 2 的次方？</strong>
+取餘數可以用 <code>&amp; (size-1)</code>，比除法快很多（很多 MCU
+沒有硬體除法）。且 2^32 是 size
+的倍數，索引可以讓它一直往上加、自然溢位，<code>head - tail</code>
+永遠是正確的個數，不用為了區分滿和空而浪費一格。</p>
+<p><strong>Q5. 這個 ring buffer
+為什麼不用上鎖？什麼情況下就需要？</strong> 因為每個索引只有一方寫，且
+32 位元寫入是原子的。如果有兩個生產者（例如兩個 task
+都想往同一個緩衝區寫 log），兩個人會同時寫 <code>head</code>，就需要
+mutex、critical section 或 compare-and-swap。</p>
+<p><strong>Q6. 接收資料會掉，你怎麼查？</strong> 先分是哪一層掉的：硬體
+FIFO overrun（中斷太慢，紀錄 overrun
+旗標）、軟體緩衝區滿（主程式太慢，計數丟棄）、framing
+error（鮑率或電氣問題，用示波器量位元寬度）。解法依序是：調低中斷門檻、加大緩衝區、開硬體流量控制、改用
+DMA。</p>
+<p><strong>Q7. 指令列收到一個超長的行該怎麼處理？</strong>
+不要寫超過緩衝區（緩衝區溢位是經典的安全漏洞），也不要交出被截斷的指令，因為截斷後可能變成另一個合法指令。本課的做法是標記溢位，等到換行整行丟掉，單元測試有一個案例專門測這件事。</p>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>��� 9
+������FreeRTOS���������task������������������������������</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;max-width:860px;margin:2rem auto;padding:0 16px;line-height:1.7;color:#222;background:#fff}
+  h1,h2,h3{line-height:1.3}h2{border-bottom:1px solid #ddd;padding-bottom:.3rem;margin-top:2rem}
+  table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95em}th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}th{background:#f3f3f3}
+  pre{background:#f6f8fa;padding:12px;overflow-x:auto;border-radius:6px}code{font-family:Consolas,monospace;font-size:.92em}
+  :not(pre)>code{background:#f0f0f0;padding:1px 4px;border-radius:3px}</style>
+</head>
+<body>
+<h1 id="esp32-韌體與驅動面試速成第-9-課">ESP32 韌體與驅動面試速成：第 9
+課</h1>
+<h2 id="第-9-課freertos一task排程優先權堆疊">第 9
+課：FreeRTOS（一）task、排程、優先權、堆疊</h2>
+<p>一句話：RTOS 讓你把程式拆成多個 task，每個 task
+有自己的堆疊和優先權；排程器永遠讓「準備好的、優先權最高的」task
+執行，task 用 delay 或等待資源主動讓出 CPU。</p>
+<h3 id="概念">概念</h3>
+<p><strong>Task 的四種狀態</strong>：</p>
+<table>
+<thead>
+<tr class="header">
+<th>狀態</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Running</td>
+<td>正在這顆核心上執行</td>
+</tr>
+<tr class="even">
+<td>Ready</td>
+<td>可以執行，在等 CPU</td>
+</tr>
+<tr class="odd">
+<td>Blocked</td>
+<td>在等時間（<code>vTaskDelay</code>）或等事件（queue、semaphore），不佔
+CPU</td>
+</tr>
+<tr class="even">
+<td>Suspended</td>
+<td>被 <code>vTaskSuspend</code> 暫停，不會被排程</td>
+</tr>
+</tbody>
+</table>
+<p><strong>搶占式排程（preemptive）</strong>：只要有更高優先權的 task
+變成 Ready（例如它的 delay 時間到了、或 ISR
+送了訊號給它），排程器立刻切換過去，不用等目前的 task 讓出。同優先權的
+task 會在每個 tick（ESP32 預設 1 ms）輪流（time
+slicing）。合作式排程（cooperative）則要 task 自己讓出 CPU
+才會切換。</p>
+<p><strong>優先權怎麼設</strong>：數字越大越優先。原則是「越需要準時、做得越短的越高」，例如通訊協定處理高、UI
+和 log 低。高優先權 task 一定要會 block，不然會讓同核心所有低優先權的
+task 餓死（starvation），包括 idle task，然後 watchdog 會叫。</p>
+<p><strong><code>vTaskDelay</code> vs
+<code>vTaskDelayUntil</code></strong>：<code>vTaskDelay(100)</code>
+是「從現在起睡 100
+ms」，工作本身花的時間會累加上去，週期越跑越長。<code>vTaskDelayUntil(&amp;last, 100)</code>
+是「睡到上次預定時間 + 100 ms」，週期固定，適合取樣、控制迴圈。</p>
+<p><strong>堆疊</strong>：每個 task
+有自己固定大小的堆疊，放區域變數、函式呼叫、中斷時的暫存器。太小會溢位，蓋到別人的記憶體，症狀常常是莫名其妙的當機。用
+<code>uxTaskGetStackHighWaterMark()</code>
+看「剩餘堆疊曾經最低到多少」，留 20–30% 餘裕。注意 ESP-IDF 的
+<code>xTaskCreate</code> 堆疊單位是 <strong>byte</strong>，原版 FreeRTOS
+是 word。</p>
+<p><strong>ESP32 的雙核心</strong>：ESP-IDF 的 FreeRTOS 是 SMP
+版本，兩顆核心各有自己的排程。<code>xTaskCreatePinnedToCore</code>
+可以把 task 固定在某顆核心；Wi-Fi/BT 協定堆疊通常在核心 0，Arduino 的
+<code>loop()</code> 在核心 1。</p>
+<h3 id="wokwi-練習-9搶占漂移餓死溢位">Wokwi 練習
+9：搶占、漂移、餓死、溢位</h3>
+<p>程式專案是 <code>Day09_FreeRTOS_Tasks</code>，一顆 LED 接 GPIO18 由
+<code>blink_task</code> 閃爍。週期統計放在
+<code>lib/period_stats</code>，附 5 個單元測試。</p>
+<table>
+<thead>
+<tr class="header">
+<th>EXERCISE</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>優先權 5 的 task 每 100 ms 醒來，同核心有一個優先權 1 的 task
+一直在計算</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>每次多做 3 ms 工作，比較 <code>vTaskDelay</code> 和
+<code>vTaskDelayUntil</code> 的漂移</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>一個優先權 5、不讓出 CPU 的 task 霸佔核心 1 三秒</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>量測堆疊用量；2 KB 堆疊遞迴 40 層讓它溢位</td>
+</tr>
+</tbody>
+</table>
+<p>四個練習我都在 ESP32
+模擬器（QEMU，用指令計數模式讓時間穩定）上跑過：</p>
+<table>
+<thead>
+<tr class="header">
+<th>練習</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>高優先權 task 週期 100,000 µs，最短最長都是 100,000，同核心的計算
+task 照樣在跑</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td><code>vTaskDelay</code>：平均 103,009 µs，50 個週期累積漂移 +150
+ms；<code>vTaskDelayUntil</code>：平均 99,988 µs，漂移不到 1 ms</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>hog 霸佔期間，<code>loop()</code> 每秒 0 圈；hog 結束後恢復到每秒約
+930 圈</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>4 KB 堆疊遞迴 5 層剩 2,896 bytes、20 層只剩 256 bytes；2 KB 遞迴 40
+層當機，而且錯誤訊息是 LoadProhibited，不是「stack overflow」</td>
+</tr>
+</tbody>
+</table>
+<p>練習 3
+的結果是重點：堆疊溢位常常先蓋壞別的資料，在別處才當機，錯誤訊息看起來和堆疊毫無關係。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> periodic<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>arg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  TickType_t last <span class="op">=</span> xTaskGetTickCount<span class="op">();</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(;;)</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    do_work<span class="op">();</span>                                      <span class="co">// 每次約 3 ms</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    vTaskDelayUntil<span class="op">(&amp;</span>last<span class="op">,</span> pdMS_TO_TICKS<span class="op">(</span><span class="dv">100</span><span class="op">));</span>     <span class="co">// 以預定時間為基準，不會漂移</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>xTaskCreatePinnedToCore<span class="op">(</span>periodic<span class="op">,</span> <span class="st">&quot;periodic&quot;</span><span class="op">,</span> <span class="dv">4096</span><span class="op">,</span> <span class="kw">nullptr</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="kw">nullptr</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">//                      函式       名稱        堆疊(bytes) 參數  優先權 handle 核心</span></span></code></pre></div>
+<h3 id="面試題與參考答案">面試題與參考答案</h3>
+<p><strong>Q1. RTOS 和 super loop（一個大 while
+迴圈）各適合什麼？</strong> super loop
+簡單、可預測、沒有切換開銷，適合功能少的小系統。功能一多，一個慢的動作就拖累全部，時序很難保證。RTOS
+讓每個功能是獨立的 task，用優先權保證重要的事準時，等待時不佔
+CPU；代價是記憶體（每個 task
+一個堆疊）、切換開銷，以及共享資源要同步。</p>
+<p><strong>Q2. 什麼是搶占？什麼情況下會發生 context switch？</strong>
+更高優先權的 task 變成 Ready 時，排程器立刻中斷目前的 task
+切換過去。context switch 發生在：tick 中斷時（時間片輪轉或 delay
+到期）、task 呼叫會 block 的 API、ISR 喚醒更高優先權的 task 並呼叫
+<code>portYIELD_FROM_ISR</code>、task 主動 <code>taskYIELD</code>。</p>
+<p><strong>Q3. <code>vTaskDelay</code> 和 <code>vTaskDelayUntil</code>
+差在哪？</strong> <code>vTaskDelay</code>
+是相對時間，從呼叫當下開始算，所以工作時間會累加，週期會漂移。<code>vTaskDelayUntil</code>
+是絕對時間，以上次預定的喚醒時間為基準，週期固定。週期性取樣、控制迴圈要用後者。</p>
+<p><strong>Q4. 怎麼決定 task 的堆疊大小？</strong>
+先給寬鬆的值，實際跑過最壞情況（最深的呼叫路徑、最大的區域陣列、printf
+這類吃堆疊的函式），用 <code>uxTaskGetStackHighWaterMark</code>
+看最低剩餘量，再留 20–30%
+餘裕。開發時開啟堆疊溢位檢查。避免在堆疊上放大陣列和遞迴。</p>
+<p><strong>Q5. 什麼是餓死（starvation）？怎麼避免？</strong> 高優先權
+task 一直不 block，同核心較低優先權的 task 永遠拿不到
+CPU。避免方法：高優先權 task 必須在等事件或
+delay；耗時的計算放低優先權；用 watchdog 偵測 idle task
+沒機會執行的情況。</p>
+<p><strong>Q6. 為什麼不要在 task 裡用忙等（busy wait）？</strong>
+忙等期間 task 一直是 Running，同優先權和較低優先權的 task 都得不到
+CPU，也浪費電。該用 <code>vTaskDelay</code>、等 queue 或 semaphore，讓
+task 進入 Blocked，CPU 去做別的事或進入省電。</p>
+<p><strong>Q7. 一個 task
+跑一段時間後隨機當機，錯誤訊息每次都不一樣，你會先懷疑什麼？</strong>
+堆疊溢位和記憶體被蓋寫（陣列越界、野指標、use-after-free）。先檢查各
+task 的 high water mark，加大堆疊看問題是否消失，開啟 FreeRTOS
+的溢位檢查和 heap 毒化檢查，再用 core dump 的 backtrace 找源頭。</p>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>��� 10 ������FreeRTOS���������queue���semaphore���mutex���ISR
+������</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;max-width:860px;margin:2rem auto;padding:0 16px;line-height:1.7;color:#222;background:#fff}
+  h1,h2,h3{line-height:1.3}h2{border-bottom:1px solid #ddd;padding-bottom:.3rem;margin-top:2rem}
+  table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95em}th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}th{background:#f3f3f3}
+  pre{background:#f6f8fa;padding:12px;overflow-x:auto;border-radius:6px}code{font-family:Consolas,monospace;font-size:.92em}
+  :not(pre)>code{background:#f0f0f0;padding:1px 4px;border-radius:3px}</style>
+</head>
+<body>
+<h1 id="esp32-韌體與驅動面試速成第-10-課">ESP32 韌體與驅動面試速成：第
+10 課</h1>
+<h2 id="第-10-課freertos二queuesemaphoremutexisr-交接">第 10
+課：FreeRTOS（二）queue、semaphore、mutex、ISR 交接</h2>
+<p>一句話：task 之間、ISR 和 task 之間不要直接共用變數，用 RTOS
+提供的物件交接。資料用 queue，事件用 semaphore 或 task
+notification，共享資源用 mutex。</p>
+<h3 id="概念">概念</h3>
+<p><strong>該用哪一種</strong>：</p>
+<table>
+<thead>
+<tr class="header">
+<th>物件</th>
+<th>用途</th>
+<th>重點</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Queue</td>
+<td>傳資料</td>
+<td>以「複製」放入，滿了可以等或丟棄；ISR 用
+<code>xQueueSendFromISR</code></td>
+</tr>
+<tr class="even">
+<td>Binary semaphore</td>
+<td>通知「發生了」</td>
+<td>只有 0 和 1，事件重疊時會合併</td>
+</tr>
+<tr class="odd">
+<td>Counting semaphore</td>
+<td>通知「發生了幾次」、管理 N 個資源</td>
+<td>不會合併事件</td>
+</tr>
+<tr class="even">
+<td>Mutex</td>
+<td>保護共享資源</td>
+<td>有擁有者、有優先權繼承；只能由拿鎖的 task 放，不能在 ISR 用</td>
+</tr>
+<tr class="odd">
+<td>Task notification</td>
+<td>叫醒某一個特定 task</td>
+<td>最快最省記憶體，但只能有一個接收者</td>
+</tr>
+<tr class="even">
+<td>Event group</td>
+<td>等「多個條件」中的任一或全部</td>
+<td>例如 Wi-Fi 連上且時間同步完成</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ISR 交接（deferred interrupt processing）</strong>：ISR
+只做最少的事，例如讀資料、清旗標、丟進 queue 或 give
+semaphore，真正的處理交給 task。ISR 裡只能用 <code>...FromISR</code>
+版本的 API，不能等待。它們多一個 <code>pxHigherPriorityTaskWoken</code>
+參數：如果這次叫醒的 task 比被中斷的 task 優先權高，就在 ISR 結尾呼叫
+<code>portYIELD_FROM_ISR()</code>，離開 ISR 就直接切過去，不用等下一個
+tick。</p>
+<p><strong>優先權反轉（priority inversion）</strong>：低優先權 task
+拿著鎖，高優先權 task 在等這把鎖，這時中優先權 task
+跑起來（它不需要鎖），把低優先權 task 擋住，結果高優先權 task
+要等中優先權 task 做完。解法是<strong>優先權繼承</strong>：FreeRTOS 的
+mutex 會讓拿鎖的 task 暫時升到等待者的優先權。binary semaphore
+沒有這個機制，所以「當鎖用」一定要用 mutex。</p>
+<p><strong>Deadlock</strong>：兩個 task
+各拿一把鎖又等對方的鎖。避免方法：所有地方用固定順序拿鎖、拿鎖時設
+timeout、盡量一次只拿一把。</p>
+<p><strong>Critical section vs
+mutex</strong>：<code>portENTER_CRITICAL</code> 關中斷（ESP32 還加
+spinlock 擋另一顆核心），只能包幾行，裡面不能呼叫會 block 的 API。mutex
+可以包較長的動作（例如一整次 I2C 交易），等鎖時 task 進入
+Blocked，不浪費 CPU。</p>
+<h3 id="wokwi-練習-10isr-到-task事件遺失競爭優先權反轉">Wokwi 練習
+10：ISR 到 task、事件遺失、競爭、優先權反轉</h3>
+<p>程式專案是 <code>Day10_FreeRTOS_Sync</code>。LED 接 GPIO18，按鈕接
+GPIO4 到 GND。按鈕去彈跳放在 <code>lib/debounce</code>，附 4
+個單元測試。</p>
+<table>
+<thead>
+<tr class="header">
+<th>EXERCISE</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>計時器 ISR 每 10 ms 把一筆取樣丟進長度 8 的 queue，task
+取出並檢查延遲和缺口；3 秒後消費者變慢。按鈕 ISR 用 task notification
+叫醒 task，在 task 裡去彈跳再切換 LED</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>ISR 每 100 ms 連續發生 5 個事件，每個要處理 3 ms，比較 binary 和
+counting semaphore</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>兩個同優先權的 task 各把共享變數加 1000
+次，讀和寫之間被切走，比較有無 mutex</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>low 拿鎖、high 等鎖、medium 霸佔 CPU，比較用 binary semaphore 和
+mutex 當鎖</td>
+</tr>
+</tbody>
+</table>
+<p>我在 ESP32 模擬器（QEMU）上跑過四個練習，按鈕部分要在 Wokwi
+或實機上按：</p>
+<table>
+<thead>
+<tr class="header">
+<th>練習</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>正常時 ISR 到 task 最大延遲 12 µs、0 遺失。消費者變慢後 queue
+一直滿著 8 筆，延遲變成約 120 ms，每 100 筆丟掉約 50 筆</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>150 個事件：binary semaphore 處理 90 個、遺失 60 個；counting
+semaphore 150 個全部處理</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>沒有保護：結果 1000（應該 2000）；有 mutex：2000</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>binary semaphore 當鎖：high 等了 476 ms（等 medium
+做完）；mutex：high 只等 35 ms（low 繼承優先權後把剩下的工作做完）</td>
+</tr>
+</tbody>
+</table>
+<p>練習 0 說明了 queue 長度的意義：queue
+只能吸收短暫的突發，消費者長期比生產者慢，再長的 queue 都會滿，而且滿的
+queue 會讓每一筆資料的延遲都變長。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> IRAM_ATTR on_timer<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  sample_t s <span class="op">=</span> <span class="op">{</span> isr_seq<span class="op">++,</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)</span>micros<span class="op">()</span> <span class="op">};</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  BaseType_t woken <span class="op">=</span> pdFALSE<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>xQueueSendFromISR<span class="op">(</span>sample_q<span class="op">,</span> <span class="op">&amp;</span>s<span class="op">,</span> <span class="op">&amp;</span>woken<span class="op">)</span> <span class="op">!=</span> pdTRUE<span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    isr_drops<span class="op">++;</span>                       <span class="co">// queue 滿了：ISR 不能等，只能丟並記下來</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>woken<span class="op">)</span> portYIELD_FROM_ISR<span class="op">();</span>     <span class="co">// 叫醒了更高優先權的 task，離開 ISR 就切過去</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> sample_task<span class="op">(</span><span class="dt">void</span> <span class="op">*)</span> <span class="op">{</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(;;)</span> <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    sample_t s<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    xQueueReceive<span class="op">(</span>sample_q<span class="op">,</span> <span class="op">&amp;</span>s<span class="op">,</span> portMAX_DELAY<span class="op">);</span>   <span class="co">// 沒資料時 Blocked，不佔 CPU</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    process<span class="op">(&amp;</span>s<span class="op">);</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="面試題與參考答案">面試題與參考答案</h3>
+<p><strong>Q1. queue、semaphore、mutex 各用在什麼場合？</strong>
+要傳資料用 queue；只要通知「事件發生了」用 semaphore（要記次數用
+counting）或 task notification；保護共享資源（例如 I2C
+匯流排、一個全域結構）用 mutex。mutex 有擁有者和優先權繼承，semaphore
+沒有。</p>
+<p><strong>Q2. 為什麼不能拿 binary semaphore 當鎖？</strong>
+它沒有優先權繼承，會發生優先權反轉；它也沒有擁有者，任何 task 甚至 ISR
+都可以 give，錯誤的 give 不會被發現。保護資源要用 mutex，需要同一個 task
+重複拿鎖時用 recursive mutex。</p>
+<p><strong>Q3. 解釋優先權反轉，以及怎麼解決。</strong> 低優先權 task
+拿著鎖，高優先權 task 等這把鎖，中優先權 task 把低優先權 task
+擋住，高優先權 task 實際上被中優先權 task 卡住。解法：用有優先權繼承的
+mutex；縮短持有鎖的時間；或用 priority
+ceiling（拿鎖時直接升到可能使用這把鎖的最高優先權）。經典案例是火星探路者號（Mars
+Pathfinder）的重開機問題。</p>
+<p><strong>Q4. ISR 裡可以呼叫哪些 FreeRTOS
+API？<code>pxHigherPriorityTaskWoken</code> 是做什麼的？</strong>
+只能呼叫 <code>...FromISR</code>
+版本，而且不能等待。<code>pxHigherPriorityTaskWoken</code> 由 API
+填入：如果這次叫醒的 task 優先權比被中斷的 task 高，它會被設成
+pdTRUE，ISR 結尾呼叫 <code>portYIELD_FROM_ISR()</code> 就能在離開 ISR
+時直接切到那個 task，縮短反應時間。</p>
+<p><strong>Q5. 中斷來得很快，資料怎麼交給 task 才不會掉？</strong> ISR
+只把資料放進 queue 或環形緩衝區，task 批次處理。queue
+長度要能吸收最壞情況的突發，消費者的平均處理速度一定要快過生產速度。量測
+queue 的最高水位和丟棄次數，大量資料改用 DMA 加雙緩衝。</p>
+<p><strong>Q6. 怎麼避免 deadlock？</strong>
+所有地方用相同順序拿鎖；拿鎖用
+timeout，逾時就記錄錯誤並回退；持有鎖時不要呼叫可能拿另一把鎖的函式；能用一把鎖就不要用兩把，或把資源交給單一
+task 管理，其他 task 透過 queue 發請求。</p>
+<p><strong>Q7. task notification 和 semaphore 比有什麼優缺點？</strong>
+task notification 直接寫在 task
+控制區塊裡，不用另外配置物件，速度快、省記憶體。缺點是只能通知一個特定
+task，不能多個 task 等同一個事件，也不能在 ISR 裡等待。一對一的「ISR
+叫醒 driver task」最適合用它。</p>
+</body>
+</html>

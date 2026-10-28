@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>��� 12 ������������������HAL ������������������</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;max-width:860px;margin:2rem auto;padding:0 16px;line-height:1.7;color:#222;background:#fff}
+  h1,h2,h3{line-height:1.3}h2{border-bottom:1px solid #ddd;padding-bottom:.3rem;margin-top:2rem}
+  table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95em}th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}th{background:#f3f3f3}
+  pre{background:#f6f8fa;padding:12px;overflow-x:auto;border-radius:6px}code{font-family:Consolas,monospace;font-size:.92em}
+  :not(pre)>code{background:#f0f0f0;padding:1px 4px;border-radius:3px}</style>
+</head>
+<body>
+<h1 id="esp32-韌體與驅動面試速成第-12-課">ESP32 韌體與驅動面試速成：第
+12 課</h1>
+<h2 id="第-12-課低功耗hal-重構總複習">第 12 課：低功耗、HAL
+重構、總複習</h2>
+<p>一句話：低功耗的核心是「做完就睡，能睡多深就睡多深」；好的驅動架構讓應用邏輯只透過
+HAL 碰硬體，才能在電腦上測試、換晶片時只改一層。</p>
+<h3 id="概念">概念</h3>
+<p><strong>ESP32 的電源模式</strong>（數字來自
+datasheet，指晶片本身，開發板上的 USB 晶片和 LED 會多吃很多）：</p>
+<table>
+<thead>
+<tr class="header">
+<th>模式</th>
+<th>還在動的</th>
+<th>約略電流</th>
+<th>醒來後</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Active</td>
+<td>CPU、Wi-Fi／BT</td>
+<td>數十到兩百多 mA</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>Modem sleep</td>
+<td>CPU，無線關閉</td>
+<td>約 20–70 mA</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td>Light sleep</td>
+<td>CPU 暫停，RAM 保留</td>
+<td>約 0.8 mA</td>
+<td>從呼叫的下一行繼續</td>
+</tr>
+<tr class="even">
+<td>Deep sleep</td>
+<td>只剩 RTC 和 RTC 記憶體</td>
+<td>約 10 µA</td>
+<td>從頭開機，只有 RTC 記憶體保留</td>
+</tr>
+<tr class="odd">
+<td>Hibernation</td>
+<td>只剩 RTC 計時器</td>
+<td>約 5 µA</td>
+<td>從頭開機</td>
+</tr>
+</tbody>
+</table>
+<p><strong>喚醒來源</strong>：RTC 計時器、ext0（單一 RTC GPIO
+的電位）、ext1（多個 RTC GPIO 的 AND／OR）、觸控、ULP 協處理器；light
+sleep 還可以用一般 GPIO 和 UART。只有 RTC GPIO（例如
+GPIO0、2、4、12–15、25–27、32–39）能在深度睡眠時喚醒。</p>
+<p><strong>平均電流怎麼算</strong>：一個每 10 分鐘醒來 2 秒、醒著時 80
+mA、睡著時 10 µA 的裝置，平均電流 ≈ (80 mA × 2 + 0.01 mA × 598) / 600 ≈
+0.28
+mA。降低平均耗電通常靠「醒得更短」和「醒得更少」，而不是把睡眠電流再壓低。</p>
+<p><strong>低功耗設計清單</strong>：關掉不用的周邊和時脈；Wi-Fi
+能不開就不開，開了就用省電模式；感測器也要進低功耗模式或斷電；浮接的腳位設成固定電位避免漏電；睡前把
+UART 送完；量測時排除開發板上其他元件的電流。</p>
+<p><strong>HAL 分層</strong>：</p>
+<table>
+<thead>
+<tr class="header">
+<th>層</th>
+<th>內容</th>
+<th>換晶片時</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>應用邏輯</td>
+<td>狀態機、演算法</td>
+<td>不用改，可以在電腦上測試</td>
+</tr>
+<tr class="even">
+<td>裝置驅動</td>
+<td>MPU6050、ILI9341 這類外部晶片</td>
+<td>不用改，只依賴匯流排 HAL</td>
+</tr>
+<tr class="odd">
+<td>HAL</td>
+<td><code>i2c_write_read</code>、<code>gpio_write</code>、<code>now_ms</code>
+這類函式指標或函式介面</td>
+<td>重寫這一層</td>
+</tr>
+<tr class="even">
+<td>晶片 SDK／暫存器</td>
+<td>ESP-IDF、暫存器操作</td>
+<td>換掉</td>
+</tr>
+</tbody>
+</table>
+<p>這套課程的每個驅動（第 5 課的環形緩衝區、第 6 課的 MPU6050、第 7 課的
+ILI9341）都是這樣寫的，所以都能在電腦上用假的匯流排測試。</p>
+<h3 id="wokwi-練習-12睡眠和總複習應用">Wokwi 練習
+12：睡眠和總複習應用</h3>
+<p>程式專案是 <code>Day12_LowPower_HAL_Capstone</code>。LED 接
+GPIO18，按鈕接 GPIO33（RTC GPIO）到 GND，可變電阻中間腳接
+GPIO34。應用邏輯放在 <code>lib/sensor_app</code>（沿用第 10 課的
+<code>lib/debounce</code>），附 5 個單元測試。</p>
+<table>
+<thead>
+<tr class="header">
+<th>EXERCISE</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>深度睡眠 2 秒、計時器喚醒，重複 3 次；<code>RTC_DATA_ATTR</code>
+的計數和睡前時間會保留</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>深度睡眠，按按鈕（ext0）或 10 秒到期喚醒，分辨喚醒原因</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>淺度睡眠 500 ms × 5
+次，按鈕可提早叫醒；程式從下一行繼續、區域變數還在</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>總複習：按鈕切換取樣（每 100 ms 讀可變電阻、每 10 筆回報），閒置 10
+秒深度睡眠，按鈕叫醒</td>
+</tr>
+</tbody>
+</table>
+<p>驗證狀況：<code>lib/sensor_app</code> 的 5 個單元測試在電腦上用假 HAL
+和模擬時間跑過，全部通過；四個練習都編譯過、0 warning。ESP32
+模擬器（QEMU）沒有模擬睡眠電路，<code>esp_deep_sleep_start</code> 在
+QEMU 裡會當機，所以睡眠部分要在 Wokwi 或實機上看。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> <span class="op">(*</span>now_ms<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>ctx<span class="op">);</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>  <span class="op">(*</span>read_button<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>ctx<span class="op">);</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>  <span class="op">(*</span>read_sensor<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>ctx<span class="op">);</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span>set_led<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>ctx<span class="op">,</span> <span class="dt">int</span> on<span class="op">);</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span>report<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>ctx<span class="op">,</span> <span class="dt">int</span> avg<span class="op">,</span> <span class="dt">int</span> min<span class="op">,</span> <span class="dt">int</span> max<span class="op">);</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>ctx<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> sensor_hal_t<span class="op">;</span>                       <span class="co">// 應用邏輯只看得到這些</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> loop<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>app_step<span class="op">(&amp;</span>app<span class="op">)</span> <span class="op">==</span> APP_SLEEP<span class="op">)</span> <span class="op">{</span>  <span class="co">// 應用邏輯決定「可以睡了」，怎麼睡由平台決定</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    Serial<span class="op">.</span>flush<span class="op">();</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    rtc_gpio_pullup_en<span class="op">(</span>GPIO_NUM_33<span class="op">);</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    esp_sleep_enable_ext0_wakeup<span class="op">(</span>GPIO_NUM_33<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    esp_deep_sleep_start<span class="op">();</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  delay<span class="op">(</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="面試題與參考答案">面試題與參考答案</h3>
+<p><strong>Q1. 一個電池供電的感測器，要怎麼讓它撐一年？</strong>
+先算預算：電池容量除以 8760
+小時得到允許的平均電流。然後讓裝置大部分時間深度睡眠，用 RTC
+計時器定時醒來，醒來後快速量測、批次累積資料，久久才開一次 Wi-Fi
+上傳。感測器和周邊在不用時斷電或進低功耗模式，用實際量測（電流探棒、功率分析儀）驗證每個階段的電流和時間。</p>
+<p><strong>Q2. light sleep 和 deep sleep 怎麼選？</strong> light sleep
+保留 RAM 和 CPU 狀態，醒來快（約 1 ms
+內）、程式從原處繼續，適合頻繁短暫休息，例如等下一個 UART 字元或 Wi-Fi
+的 DTIM 間隔。deep sleep 耗電低兩個數量級，但醒來要重新開機（數十到數百
+ms），只有 RTC 記憶體保留，適合長時間休息。</p>
+<p><strong>Q3. 深度睡眠醒來後怎麼知道之前的狀態？</strong> 用
+<code>RTC_DATA_ATTR</code>
+存少量狀態（計數、上次量測值、要不要上傳），用
+<code>esp_sleep_get_wakeup_cause</code> 判斷是被誰叫醒，大量資料存在 NVS
+或 flash。注意 RTC 記憶體只有 8 KB，而且在上電或一般 reset
+時會被重新初始化。</p>
+<p><strong>Q4. 你怎麼設計一個可移植、可測試的驅動？</strong>
+驅動只依賴一組 HAL 函式（例如
+<code>bus_write_read</code>、<code>delay_ms</code>），透過函式指標或連結時替換注入；驅動自己不呼叫
+SDK。狀態放在 handle
+結構裡，不用全域變數，所以可以有多個實例。錯誤用回傳值傳出。單元測試用假的匯流排記錄每一筆交易、模擬錯誤和逾時。</p>
+<h3 id="總複習模擬面試速答">總複習：模擬面試速答</h3>
+<p>面試前把下面每一題用 30 秒講完，講不出來就回去看那一課。</p>
+<table>
+<thead>
+<tr class="header">
+<th>問題</th>
+<th>重點</th>
+<th>課</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>volatile</code> 解決什麼、不解決什麼？</td>
+<td>每次真的讀寫記憶體；不保證原子性和順序</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>怎麼只改暫存器的某幾個 bit？</td>
+<td>讀－改－寫，或用 W1TS／W1TC 這類只寫 1 生效的暫存器</td>
+<td>1、2</td>
+</tr>
+<tr class="odd">
+<td>推挽和開汲極差在哪？</td>
+<td>開汲極只能拉低，可線與，I2C 用它</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>ISR 要注意什麼？</td>
+<td>短、不阻塞、不 printf、共享變數用 volatile 加 critical section、放
+IRAM</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>race condition 怎麼避免？</td>
+<td>critical section、atomic、mutex，或只讓一方寫</td>
+<td>3、10</td>
+</tr>
+<tr class="even">
+<td>PWM 頻率和解析度的關係？</td>
+<td>時脈 = 頻率 × 2^解析度，頻率越高解析度越低</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>watchdog 怎麼用才對？</td>
+<td>在確認系統健康的地方餵，不在計時器中斷裡無條件餵</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>UART 收資料怎麼不掉？</td>
+<td>ISR 放進環形緩衝區，task 處理；溢位要能偵測</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>I2C 的 ACK／NACK、clock stretching、卡死怎麼救？</td>
+<td>9 個 clock 解鎖、STOP，再重新初始化</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>SPI 四種模式？</td>
+<td>CPOL、CPHA，看 datasheet 的時序圖</td>
+<td>7</td>
+</tr>
+<tr class="odd">
+<td>DMA 要注意什麼？</td>
+<td>記憶體能不能被 DMA 存取、對齊、快取一致性、緩衝區生命週期</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>結構 padding 和 packed 的取捨？</td>
+<td>對齊存取快；packed 省空間但可能不對齊存取</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td><code>vTaskDelay</code> vs <code>vTaskDelayUntil</code>？</td>
+<td>相對時間會漂移，絕對時間不會</td>
+<td>9</td>
+</tr>
+<tr class="even">
+<td>優先權反轉？</td>
+<td>用 mutex 的優先權繼承</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>從上電到 main？</td>
+<td>ROM → bootloader → 搬 segment → 清 .bss → constructor → main</td>
+<td>11</td>
+</tr>
+<tr class="even">
+<td>OTA 怎麼不變磚？</td>
+<td>A/B 分割區、驗證、切換、自我檢查、rollback</td>
+<td>11</td>
+</tr>
+<tr class="odd">
+<td>電池裝置怎麼省電？</td>
+<td>深度睡眠、醒得短醒得少、算平均電流</td>
+<td>12</td>
+</tr>
+</tbody>
+</table>
+<p><strong>講專案經驗的方法</strong>：每個專案準備一個 2
+分鐘版本，依序講背景（做什麼產品、你負責哪塊）、遇到的困難（例如偶發當機、資料遺失、耗電太高）、你怎麼查（用了哪些工具、量了什麼數據）、結果（用數字說，例如「遺失率從
+2% 降到 0」「待機電流從 3 mA 降到 40
+µA」）。你做過完整的遊戲框架，可以講狀態機設計、固定時間步長的主迴圈、資源管理和效能分析，這些和韌體的
+super loop、排程、記憶體配置、量測方法是同一套思維。</p>
+<p><strong>除錯題的回答框架</strong>：先重現並縮小範圍，再收集證據（log、reset
+原因、core
+dump、示波器或邏輯分析儀），提出假設、一次只改一個變數驗證，修好後加測試或監控防止再發生。</p>
+</body>
+</html>
